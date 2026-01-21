@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Startup Name</title>
+
+  <!-- Basic styling -->
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --accent: #2563eb;
+      --border: #e5e7eb;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem;
+    }
+
+    header {
+      margin-bottom: 3rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      margin-top: 3rem;
+      margin-bottom: 0.75rem;
+    }
+
+    p {
+      color: var(--muted);
+      max-width: 700px;
+    }
+
+    section {
+      margin-bottom: 2.5rem;
+      padding-bottom: 2.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    section:last-child {
+      border-bottom: none;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.25rem;
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      background: #fafafa;
+    }
+
+    footer {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <!-- HERO / INTRO -->
+    <header>
+      <h1>Startup Name</h1>
+      <p>
+        One-sentence value proposition describing what the startup does and who
+        it is for.
+      </p>
+    </header>
+
+    <!-- PROBLEM -->
+    <section>
+      <h2>Problem</h2>
+      <p>
+        Brief description of the problem being solved. Focus on the pain point,
+        inefficiencies, or unmet needs in the current landscape.
+      </p>
+    </section>
+
+    <!-- SOLUTION -->
+    <section>
+      <h2>Solution</h2>
+      <p>
+        High-level overview of how the product or service solves the problem.
+        Keep it simple and outcome-focused.
+      </p>
+    </section>
+
+    <!-- PRODUCT / FEATURES -->
+    <section>
+      <h2>Product</h2>
+      <div class="grid">
+        <div class="card">
+          <strong>Feature 1</strong>
+          <p>Short description of this feature or capability.</p>
+        </div>
+        <div class="card">
+          <strong>Feature 2</strong>
+          <p>Short description of this feature or capability.</p>
+        </div>
+        <div class="card">
+          <strong>Feature 3</strong>
+          <p>Short description of this feature or capability.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TARGET USERS -->
+    <section>
+      <h2>Target Users</h2>
+      <p>
+        Description of the primary users or customers. You can mention roles,
+        industries, or use cases.
+      </p>
+    </section>
+
+    <!-- TRACTION / STATUS -->
+    <section>
+      <h2>Current Status</h2>
+      <p>
+        Brief update on the stage of the startup (idea, prototype, beta, live,
+        etc.) and any notable progress.
+      </p>
+    </section>
+
+    <!-- TEAM -->
+    <section>
+      <h2>Team</h2>
+      <div class="grid">
+        <div class="card">
+          <strong>Founder / Role</strong>
+          <p>Short background or expertise.</p>
+        </div>
+        <div class="card">
+          <strong>Founder / Role</strong>
+          <p>Short background or expertise.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section>
+      <h2>Contact</h2>
+      <p>
+        Email: <a href="mailto:example@email.com">example@email.com</a><br />
+        Other link: <a href="#">placeholder.link</a>
+      </p>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      © Year — Startup Name. All rights reserved.
+    </footer>
+  </div>
+</body>
+</html>
