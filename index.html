@@ -3,194 +3,605 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Startup Name</title>
+  <title>Axon — Cognitive Analytics for Human Potential</title>
 
-  <!-- Basic styling -->
   <style>
     :root {
-      --bg: #ffffff;
-      --text: #111827;
-      --muted: #6b7280;
-      --accent: #2563eb;
-      --border: #e5e7eb;
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #1a1a24;
+      --text-primary: #ffffff;
+      --text-secondary: #a0a0b8;
+      --accent-blue: #4f6fff;
+      --accent-purple: #8b5cf6;
+      --accent-cyan: #06b6d4;
+      --border: rgba(255, 255, 255, 0.1);
+      --card-bg: rgba(26, 26, 36, 0.6);
     }
 
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        Roboto, Helvetica, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* Gradient background effect */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 20% 50%, rgba(79, 111, 255, 0.15) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                  radial-gradient(circle at 40% 80%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+      z-index: -1;
+      animation: gradientShift 20s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(-5%, -5%); }
     }
 
     .container {
-      max-width: 900px;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 2.5rem 1.25rem;
+      padding: 0 2rem;
     }
 
-    header {
+    /* Navigation */
+    nav {
+      padding: 2rem 0;
+      position: sticky;
+      top: 0;
+      background: rgba(10, 10, 15, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+    }
+
+    nav .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      margin-left: 2.5rem;
+      font-size: 0.95rem;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-primary);
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 8rem 0 6rem;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 4.5rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #ffffff 0%, #a0a0b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero .tagline {
+      font-size: 1.5rem;
+      color: var(--text-secondary);
       margin-bottom: 3rem;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
+    .cta-button {
+      display: inline-block;
+      padding: 1rem 2.5rem;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      color: white;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1.05rem;
+      transition: transform 0.3s, box-shadow 0.3s;
+      box-shadow: 0 10px 40px rgba(79, 111, 255, 0.3);
+    }
+
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 50px rgba(79, 111, 255, 0.4);
+    }
+
+    /* Sections */
+    section {
+      padding: 6rem 0;
     }
 
     h2 {
-      font-size: 1.5rem;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+
+    .section-intro {
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+      max-width: 700px;
+      margin-bottom: 3rem;
+    }
+
+    /* Problem Section */
+    .problem {
+      background: linear-gradient(180deg, transparent 0%, rgba(79, 111, 255, 0.05) 100%);
+    }
+
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
       margin-top: 3rem;
+    }
+
+    .problem-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .problem-card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+      color: var(--accent-cyan);
+    }
+
+    .problem-card p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    /* Solution Section */
+    .solution {
+      text-align: center;
+    }
+
+    .solution-box {
+      background: linear-gradient(135deg, rgba(79, 111, 255, 0.1), rgba(139, 92, 246, 0.1));
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 3rem;
+      margin-top: 3rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .solution-box h3 {
+      font-size: 1.75rem;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Features Grid */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .feature-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2.5rem;
+      transition: transform 0.3s, border-color 0.3s;
+      backdrop-filter: blur(10px);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--accent-blue);
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+    }
+
+    .feature-card h3 {
+      font-size: 1.35rem;
       margin-bottom: 0.75rem;
     }
 
-    p {
-      color: var(--muted);
-      max-width: 700px;
+    .feature-card p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
     }
 
-    section {
-      margin-bottom: 2.5rem;
-      padding-bottom: 2.5rem;
-      border-bottom: 1px solid var(--border);
+    /* Metrics Section */
+    .metrics {
+      background: linear-gradient(180deg, rgba(139, 92, 246, 0.05) 0%, transparent 100%);
     }
 
-    section:last-child {
-      border-bottom: none;
-    }
-
-    .grid {
+    .metrics-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.5rem;
-      margin-top: 1.25rem;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2.5rem;
+      margin-top: 3rem;
+      text-align: center;
     }
 
-    .card {
+    .metric {
+      padding: 2rem;
+    }
+
+    .metric-number {
+      font-size: 3rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+
+    .metric-label {
+      color: var(--text-secondary);
+      font-size: 1rem;
+    }
+
+    /* Team Section */
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2.5rem;
+      margin-top: 3rem;
+    }
+
+    .team-member {
+      background: var(--card-bg);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.25rem;
-      background: #fafafa;
+      border-radius: 16px;
+      padding: 2.5rem;
+      text-align: center;
+      backdrop-filter: blur(10px);
     }
 
-    footer {
-      margin-top: 4rem;
-      padding-top: 2rem;
-      border-top: 1px solid var(--border);
+    .team-avatar {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      border-radius: 50%;
+      margin: 0 auto 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      font-weight: 700;
+    }
+
+    .team-member h3 {
+      font-size: 1.35rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .team-role {
+      color: var(--accent-cyan);
       font-size: 0.9rem;
-      color: var(--muted);
+      margin-bottom: 1rem;
     }
 
-    a {
-      color: var(--accent);
+    .team-member p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    /* Contact Section */
+    .contact {
+      text-align: center;
+      background: linear-gradient(180deg, transparent 0%, rgba(79, 111, 255, 0.05) 100%);
+    }
+
+    .contact-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 3rem;
+      max-width: 600px;
+      margin: 3rem auto 0;
+      backdrop-filter: blur(10px);
+    }
+
+    .contact-box a {
+      color: var(--accent-cyan);
       text-decoration: none;
+      font-size: 1.1rem;
+      transition: color 0.3s;
     }
 
-    a:hover {
-      text-decoration: underline;
+    .contact-box a:hover {
+      color: var(--text-primary);
+    }
+
+    /* Footer */
+    footer {
+      padding: 3rem 0;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-top: 6rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.75rem;
+      }
+
+      .hero .tagline {
+        font-size: 1.15rem;
+      }
+
+      h2 {
+        font-size: 2rem;
+      }
+
+      .nav-links a {
+        margin-left: 1.5rem;
+      }
+
+      section {
+        padding: 4rem 0;
+      }
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <!-- HERO / INTRO -->
-    <header>
-      <h1>Startup Name</h1>
-      <p>
-        One-sentence value proposition describing what the startup does and who
-        it is for.
-      </p>
-    </header>
+  <!-- Navigation -->
+  <nav>
+    <div class="container">
+      <div class="logo">Axon</div>
+      <div class="nav-links">
+        <a href="#product">Product</a>
+        <a href="#team">Team</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+  </nav>
 
-    <!-- PROBLEM -->
-    <section>
-      <h2>Problem</h2>
-      <p>
-        Brief description of the problem being solved. Focus on the pain point,
-        inefficiencies, or unmet needs in the current landscape.
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <h1>Understand Your<br/>Cognitive State</h1>
+      <p class="tagline">
+        Real-time cognitive analytics from multimodal inputs—revealing insights about your mental load, emotional patterns, and cognitive recovery.
       </p>
-    </section>
+      <a href="#contact" class="cta-button">Request Early Access</a>
+    </div>
+  </section>
 
-    <!-- SOLUTION -->
-    <section>
-      <h2>Solution</h2>
-      <p>
-        High-level overview of how the product or service solves the problem.
-        Keep it simple and outcome-focused.
+  <!-- Problem Section -->
+  <section class="problem">
+    <div class="container">
+      <h2>The Challenge</h2>
+      <p class="section-intro">
+        Mental wellbeing and cognitive performance are invisible. People struggle to understand their cognitive patterns, identify burnout early, or optimize their mental energy.
       </p>
-    </section>
-
-    <!-- PRODUCT / FEATURES -->
-    <section>
-      <h2>Product</h2>
-      <div class="grid">
-        <div class="card">
-          <strong>Feature 1</strong>
-          <p>Short description of this feature or capability.</p>
+      <div class="problem-grid">
+        <div class="problem-card">
+          <h3>Limited Self-Awareness</h3>
+          <p>Most people lack objective data about their cognitive and emotional state throughout the day.</p>
         </div>
-        <div class="card">
-          <strong>Feature 2</strong>
-          <p>Short description of this feature or capability.</p>
+        <div class="problem-card">
+          <h3>Delayed Recognition</h3>
+          <p>Burnout, stress, and cognitive overload are often recognized only after significant impact.</p>
         </div>
-        <div class="card">
-          <strong>Feature 3</strong>
-          <p>Short description of this feature or capability.</p>
+        <div class="problem-card">
+          <h3>Fragmented Data</h3>
+          <p>Existing tools capture single dimensions—missing the multimodal nature of human expression.</p>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- TARGET USERS -->
-    <section>
-      <h2>Target Users</h2>
-      <p>
-        Description of the primary users or customers. You can mention roles,
-        industries, or use cases.
+  <!-- Solution Section -->
+  <section class="solution">
+    <div class="container">
+      <h2>Our Solution</h2>
+      <p class="section-intro">
+        Axon analyzes text, voice, and video inputs to provide comprehensive insights into your cognitive state—helping you optimize performance and wellbeing.
       </p>
-    </section>
+      <div class="solution-box">
+        <h3>Multimodal Cognitive Analytics</h3>
+        <p style="color: var(--text-secondary); font-size: 1.05rem; max-width: 650px; margin: 0 auto;">
+          Our platform combines natural language processing, voice analysis, and video-based emotion recognition to give you a holistic view of your cognitive patterns, stress levels, and emotional recovery trends over time.
+        </p>
+      </div>
+    </div>
+  </section>
 
-    <!-- TRACTION / STATUS -->
-    <section>
-      <h2>Current Status</h2>
-      <p>
-        Brief update on the stage of the startup (idea, prototype, beta, live,
-        etc.) and any notable progress.
+  <!-- Product Features -->
+  <section id="product">
+    <div class="container">
+      <h2>Core Capabilities</h2>
+      <p class="section-intro">
+        Powerful analytics from the way you naturally communicate
       </p>
-    </section>
-
-    <!-- TEAM -->
-    <section>
-      <h2>Team</h2>
-      <div class="grid">
-        <div class="card">
-          <strong>Founder / Role</strong>
-          <p>Short background or expertise.</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">📝</div>
+          <h3>Text Analysis</h3>
+          <p>Sentiment analysis, linguistic patterns, and cognitive complexity detection from written entries and messages.</p>
         </div>
-        <div class="card">
-          <strong>Founder / Role</strong>
-          <p>Short background or expertise.</p>
+        <div class="feature-card">
+          <div class="feature-icon">🎙️</div>
+          <h3>Voice Analytics</h3>
+          <p>Vocal biomarkers including speech rate, pitch variation, and stress indicators from audio recordings.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎥</div>
+          <h3>Video Insights</h3>
+          <p>Facial expression analysis, micro-expressions, and non-verbal cues to detect emotional states.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h3>Cognitive Load Tracking</h3>
+          <p>Real-time measurement of mental workload and attention capacity throughout your day.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💡</div>
+          <h3>Recovery Trends</h3>
+          <p>Track emotional resilience and recovery patterns to optimize rest and performance cycles.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔔</div>
+          <h3>Proactive Alerts</h3>
+          <p>Early warning system for burnout risk, stress accumulation, and cognitive fatigue.</p>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- CONTACT -->
-    <section>
-      <h2>Contact</h2>
-      <p>
-        Email: <a href="mailto:example@email.com">example@email.com</a><br />
-        Other link: <a href="#">placeholder.link</a>
+  <!-- Metrics/Traction -->
+  <section class="metrics">
+    <div class="container">
+      <h2>Current Traction</h2>
+      <div class="metrics-grid">
+        <div class="metric">
+          <div class="metric-number">Beta</div>
+          <div class="metric-label">Development Stage</div>
+        </div>
+        <div class="metric">
+          <div class="metric-number">3</div>
+          <div class="metric-label">Modalities Analyzed</div>
+        </div>
+        <div class="metric">
+          <div class="metric-number">12+</div>
+          <div class="metric-label">Cognitive Metrics</div>
+        </div>
+        <div class="metric">
+          <div class="metric-number">Q2</div>
+          <div class="metric-label">2026 Beta Launch</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Target Users -->
+  <section>
+    <div class="container">
+      <h2>Who We Serve</h2>
+      <p class="section-intro">
+        Designed for high-performers, knowledge workers, and anyone seeking to understand and optimize their cognitive wellbeing.
       </p>
-    </section>
+      <div class="features-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+        <div class="feature-card">
+          <h3>Executives & Leaders</h3>
+          <p>Optimize decision-making quality and prevent executive burnout with data-driven insights.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Knowledge Workers</h3>
+          <p>Engineers, designers, and analysts who need to manage cognitive load and maintain focus.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Mental Health Practitioners</h3>
+          <p>Therapists and coaches supporting clients with objective cognitive and emotional data.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <!-- FOOTER -->
-    <footer>
-      © Year — Startup Name. All rights reserved.
-    </footer>
-  </div>
+  <!-- Team Section -->
+  <section id="team">
+    <div class="container">
+      <h2>Our Team</h2>
+      <p class="section-intro">
+        Built by experts in AI, neuroscience, and human-computer interaction
+      </p>
+      <div class="team-grid">
+        <div class="team-member">
+          <div class="team-avatar">JD</div>
+          <h3>Jane Doe</h3>
+          <div class="team-role">Co-Founder & CEO</div>
+          <p>Former ML lead at Google Brain. PhD in Computational Neuroscience from MIT. 10+ years in cognitive AI.</p>
+        </div>
+        <div class="team-member">
+          <div class="team-avatar">AS</div>
+          <h3>Alex Smith</h3>
+          <div class="team-role">Co-Founder & CTO</div>
+          <p>Built multimodal ML systems at OpenAI. MS Computer Science Stanford. Expert in real-time inference.</p>
+        </div>
+        <div class="team-member">
+          <div class="team-avatar">MP</div>
+          <h3>Dr. Maria Patel</h3>
+          <div class="team-role">Chief Science Officer</div>
+          <p>Clinical psychologist and researcher. Published 30+ papers on cognitive load and emotional regulation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="contact">
+    <div class="container">
+      <h2>Get in Touch</h2>
+      <p class="section-intro">
+        Interested in partnering, investing, or joining our beta? We'd love to hear from you.
+      </p>
+      <div class="contact-box">
+        <p style="margin-bottom: 1.5rem;">
+          <strong>Email:</strong><br/>
+          <a href="mailto:potential@axon.ai">potential@axon.ai</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      © 2026 MindMetrics. All rights reserved.
+    </div>
+  </footer>
 </body>
 </html>
