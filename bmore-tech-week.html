@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bmore Tech Week — Check In</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #080810;
+      --card: rgba(255,255,255,0.035);
+      --border: rgba(255,255,255,0.075);
+      --text: #eeeef5;
+      --muted: rgba(238,238,245,0.45);
+      --accent: #a78bfa;
+      --r: 18px;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 20px;
+    }
+
+    /* Ambient background glows */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 55% at 15% 5%,  rgba(124,58,237,0.18)  0%, transparent 65%),
+        radial-gradient(ellipse 55% 45% at 85% 85%, rgba(6,214,160,0.12)   0%, transparent 60%),
+        radial-gradient(ellipse 45% 40% at 70% 20%, rgba(255,107,107,0.09) 0%, transparent 55%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 560px;
+    }
+
+    /* ── Header ── */
+    .header {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(167,139,250,0.1);
+      border: 1px solid rgba(167,139,250,0.22);
+      color: var(--accent);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      padding: 6px 14px 6px 12px;
+      border-radius: 100px;
+      margin-bottom: 22px;
+    }
+
+    .badge-dot {
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2.2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.4; transform: scale(0.7); }
+    }
+
+    h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(26px, 5.5vw, 40px);
+      font-weight: 700;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #eeeef5 25%, #a78bfa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+    }
+
+    .header p {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.65;
+      max-width: 380px;
+      margin: 0 auto;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 36px;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow:
+        0 32px 72px rgba(0,0,0,0.45),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    .section { margin-bottom: 28px; }
+
+    .label {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .label-optional {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.03em;
+      text-transform: none;
+      opacity: 0.55;
+    }
+
+    /* ── Colour picker ── */
+    .picker-shell {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow:
+        0 8px 28px rgba(0,0,0,0.35),
+        inset 0 0 0 1px rgba(255,255,255,0.05);
+      touch-action: none;
+    }
+
+    #colorCanvas {
+      width: 100%;
+      height: 220px;
+      display: block;
+      cursor: crosshair;
+      user-select: none;
+    }
+
+    .corner-label {
+      position: absolute;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 6px 9px;
+      background: rgba(0,0,0,0.38);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 7px;
+      pointer-events: none;
+      user-select: none;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .corner-label.tl { top: 10px; left: 10px; }
+    .corner-label.tr { top: 10px; right: 10px; }
+    .corner-label.bl { bottom: 10px; left: 10px; }
+    .corner-label.br { bottom: 10px; right: 10px; }
+
+    #pickerCursor {
+      position: absolute;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      border: 2.5px solid #fff;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.65), 0 0 0 1px rgba(0,0,0,0.25);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      display: none;
+      transition: transform 0.08s ease;
+    }
+
+    .color-readout {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      margin-top: 13px;
+    }
+
+    #colorSwatch {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.06);
+      flex-shrink: 0;
+      transition: background 0.15s ease;
+    }
+
+    #colorHex {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 19px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      transition: color 0.2s ease;
+    }
+
+    #colorFeeling {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    /* ── Divider ── */
+    .hr {
+      height: 1px;
+      background: rgba(255,255,255,0.055);
+      margin: 26px 0;
+    }
+
+    /* ── Textarea / Input ── */
+    textarea, input[type="email"] {
+      width: 100%;
+      background: rgba(255,255,255,0.038);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 11px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      padding: 13px 15px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      -webkit-appearance: none;
+    }
+
+    textarea { height: 96px; resize: none; }
+
+    textarea::placeholder, input[type="email"]::placeholder {
+      color: rgba(238,238,245,0.25);
+    }
+
+    textarea:focus, input[type="email"]:focus {
+      border-color: rgba(167,139,250,0.38);
+      box-shadow: 0 0 0 3px rgba(167,139,250,0.08);
+    }
+
+    input[type="email"].error {
+      border-color: rgba(255,107,107,0.5);
+      box-shadow: 0 0 0 3px rgba(255,107,107,0.08);
+    }
+
+    .email-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+      margin-top: 10px;
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .email-note svg { flex-shrink: 0; margin-top: 2px; opacity: 0.55; }
+
+    /* ── Submit ── */
+    .submit-btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+      border: none;
+      border-radius: 11px;
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      box-shadow: 0 8px 28px rgba(124,58,237,0.35);
+      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+      margin-top: 4px;
+    }
+
+    .submit-btn:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+      box-shadow: 0 12px 36px rgba(124,58,237,0.5);
+    }
+
+    .submit-btn:active { transform: translateY(0); }
+
+    /* ── Success state ── */
+    #successCard {
+      display: none;
+      text-align: center;
+      padding: 16px 0;
+    }
+
+    .success-icon {
+      font-size: 52px;
+      line-height: 1;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    #successCard h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 30px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #eeeef5 25%, #a78bfa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 10px;
+    }
+
+    #successCard p {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.65;
+      max-width: 380px;
+      margin: 0 auto;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: rgba(238,238,245,0.28);
+      margin-top: 22px;
+      letter-spacing: 0.02em;
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="header">
+    <div class="badge">
+      <span class="badge-dot"></span>
+      Baltimore Tech Week
+    </div>
+    <h1>How are you feeling today?</h1>
+    <p>Take less than 30 seconds. Let us know how you're feeling, and we'll send you something back.</p>
+  </div>
+
+  <div class="card">
+
+    <form id="mainForm" novalidate>
+
+      <!-- 1 · Colour picker -->
+      <div class="section">
+        <div class="label">Pick your color</div>
+        <div class="picker-shell" id="pickerShell">
+          <canvas id="colorCanvas"></canvas>
+          <div class="corner-label tl"><span>😄</span> Excited</div>
+          <div class="corner-label tr"><span>✨</span> Inspired</div>
+          <div class="corner-label bl"><span>🌊</span> Calm</div>
+          <div class="corner-label br"><span>😬</span> Anxious</div>
+          <div id="pickerCursor"></div>
+        </div>
+        <div class="color-readout">
+          <div id="colorSwatch"></div>
+          <div>
+            <div id="colorHex">—</div>
+            <div id="colorFeeling">Click anywhere on the gradient to capture your vibe</div>
+          </div>
+        </div>
+        <input type="hidden" name="color" id="selectedColor">
+      </div>
+
+      <div class="hr"></div>
+
+      <!-- 2 · Comments -->
+      <div class="section">
+        <div class="label">
+          Anything on your mind?
+          <span class="label-optional">optional</span>
+        </div>
+        <textarea name="comments" placeholder="What's energising you today? What's weighing on you? Tell us more and we'll give you some personalized insights."></textarea>
+      </div>
+
+      <div class="hr"></div>
+
+      <!-- 3 · Email -->
+      <div class="section" style="margin-bottom: 24px;">
+        <div class="label">Your email</div>
+        <input type="email" id="emailInput" name="email" placeholder="you@example.com" autocomplete="email">
+        <p class="email-note">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+          By submitting, you'll join our waitlist. We'll also email you personalised feedback comparing your responses to the wider group — you might be more aligned, or more unique, than you think.
+        </p>
+      </div>
+
+      <button type="submit" class="submit-btn">Submit check-in &rarr;</button>
+
+    </form>
+
+    <div id="successCard">
+      <span class="success-icon">🎉</span>
+      <h2>You're in.</h2>
+      <p>Thanks for checking in. If you provided us with your email, we'll send your personalised report to your inbox — and you're officially on the waitlist.</p>
+    </div>
+
+  </div>
+
+  <p class="footer">Axon 2026 &nbsp;·&nbsp; Your mind, mapped.</p>
+
+</div>
+
+<script>
+  /* ── Colour picker ── */
+  const canvas  = document.getElementById('colorCanvas');
+  const ctx     = canvas.getContext('2d');
+  const cursor  = document.getElementById('pickerCursor');
+  const swatch  = document.getElementById('colorSwatch');
+  const hexEl   = document.getElementById('colorHex');
+  const feelEl  = document.getElementById('colorFeeling');
+  const hidden  = document.getElementById('selectedColor');
+
+  // Corner colours (R,G,B): TL=Excited, TR=Inspired, BL=Calm, BR=Anxious
+  const C = {
+    tl: [255, 196, 30],
+    tr: [130, 80, 255],
+    bl: [10,  210, 165],
+    br: [255, 95,  95],
+  };
+
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  function colorAt(tx, ty) {
+    return [0,1,2].map(i =>
+      Math.round(lerp(lerp(C.tl[i], C.tr[i], tx), lerp(C.bl[i], C.br[i], tx), ty))
+    );
+  }
+
+  function toHex([r, g, b]) {
+    return '#' + [r,g,b].map(v => v.toString(16).padStart(2,'0')).join('');
+  }
+
+  function describeFeeling(tx, ty) {
+    const weights = [
+      { name: 'Excited',  w: (1-tx)*(1-ty) },
+      { name: 'Inspired', w:    tx *(1-ty) },
+      { name: 'Calm',     w: (1-tx)*   ty  },
+      { name: 'Anxious',  w:    tx *   ty  },
+    ].sort((a, b) => b.w - a.w);
+
+    if (weights[0].w > 0.58) return `Feeling ${weights[0].name.toLowerCase()}`;
+    return `A blend of ${weights[0].name.toLowerCase()} & ${weights[1].name.toLowerCase()}`;
+  }
+
+  function drawGradient() {
+    const w = canvas.width, h = canvas.height;
+    const img = ctx.createImageData(w, h);
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const [r, g, b] = colorAt(x / (w-1), y / (h-1));
+        const i = (y * w + x) * 4;
+        img.data[i]   = r;
+        img.data[i+1] = g;
+        img.data[i+2] = b;
+        img.data[i+3] = 255;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+
+  function resizeCanvas() {
+    const dpr  = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width  = Math.round(rect.width  * dpr);
+    canvas.height = Math.round(rect.height * dpr);
+    drawGradient();
+  }
+
+  function pick(e) {
+    e.preventDefault();
+    const rect = canvas.getBoundingClientRect();
+    const src  = e.touches ? e.touches[0] : e;
+    const tx   = Math.max(0, Math.min(1, (src.clientX - rect.left)  / rect.width));
+    const ty   = Math.max(0, Math.min(1, (src.clientY - rect.top)   / rect.height));
+
+    const rgb = colorAt(tx, ty);
+    const hex = toHex(rgb);
+
+    cursor.style.left    = (tx * 100) + '%';
+    cursor.style.top     = (ty * 100) + '%';
+    cursor.style.display = 'block';
+    cursor.style.background = hex;
+
+    swatch.style.background = hex;
+    hexEl.textContent  = hex.toUpperCase();
+    feelEl.textContent = describeFeeling(tx, ty);
+    hidden.value       = hex;
+  }
+
+  let dragging = false;
+  canvas.addEventListener('mousedown',  e => { dragging = true; pick(e); });
+  document.addEventListener('mousemove', e => { if (dragging) pick(e); });
+  document.addEventListener('mouseup',   () => dragging = false);
+  canvas.addEventListener('touchstart',  pick, { passive: false });
+  canvas.addEventListener('touchmove',   pick, { passive: false });
+
+  requestAnimationFrame(resizeCanvas);
+  window.addEventListener('resize', resizeCanvas);
+
+  /* ── Form submission ── */
+  document.getElementById('mainForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const emailInput = document.getElementById('emailInput');
+
+    if (!emailInput.value.trim() || !emailInput.validity.valid) {
+      emailInput.classList.add('error');
+      emailInput.focus();
+      return;
+    }
+
+    // Fade out form, fade in success
+    const form    = document.getElementById('mainForm');
+    const success = document.getElementById('successCard');
+    form.style.transition = 'opacity 0.3s ease';
+    form.style.opacity    = '0';
+    setTimeout(() => {
+      form.style.display      = 'none';
+      success.style.display   = 'block';
+      success.style.opacity   = '0';
+      success.style.transition = 'opacity 0.4s ease';
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => { success.style.opacity = '1'; });
+      });
+    }, 300);
+  });
+
+  document.getElementById('emailInput').addEventListener('input', function() {
+    this.classList.remove('error');
+  });
+</script>
+
+</body>
+</html>
