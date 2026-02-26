@@ -373,8 +373,8 @@
           <canvas id="colorCanvas"></canvas>
           <div class="corner-label tl"><span>😄</span> Excited</div>
           <div class="corner-label tr"><span>✨</span> Inspired</div>
-          <div class="corner-label bl"><span>🌊</span> Calm</div>
-          <div class="corner-label br"><span>😬</span> Anxious</div>
+          <div class="corner-label bl"><span>😓</span> Anxious</div>
+          <div class="corner-label br"><span>😴</span> Bored</div>
           <div id="pickerCursor"></div>
         </div>
         <div class="color-readout">
@@ -424,11 +424,18 @@
 
   </div>
 
-  <p class="footer">Axon 2026 &nbsp;·&nbsp; Your mind, mapped.</p>
+  <p class="footer"><a href="index.html" style="color: inherit; text-decoration: none; opacity: 0.7; transition: opacity 0.2s; border-bottom: 1px solid rgba(238,238,245,0.3);">← Back to Axon</a> &nbsp;·&nbsp; Axon 2026 &nbsp;·&nbsp; Your mind, mapped.</p>
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script>
+  // Initialize Supabase
+  const SUPABASE_URL = "https://bsipyuyaqyhudtkilhgw.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_JeLTY7rtfMOYq9iJk6KX7A_UaCjVEZy";
+  const { createClient } = window.supabase;
+  const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
   /* ── Colour picker ── */
   const canvas  = document.getElementById('colorCanvas');
   const ctx     = canvas.getContext('2d');
@@ -438,7 +445,7 @@
   const feelEl  = document.getElementById('colorFeeling');
   const hidden  = document.getElementById('selectedColor');
 
-  // Corner colours (R,G,B): TL=Excited, TR=Inspired, BL=Calm, BR=Anxious
+  // Corner colours (R,G,B): TL=Excited, TR=Inspired, BL=Anxious, BR=Bored
   const C = {
     tl: [255, 196, 30],
     tr: [130, 80, 255],
@@ -462,8 +469,8 @@
     const weights = [
       { name: 'Excited',  w: (1-tx)*(1-ty) },
       { name: 'Inspired', w:    tx *(1-ty) },
-      { name: 'Calm',     w: (1-tx)*   ty  },
-      { name: 'Anxious',  w:    tx *   ty  },
+      { name: 'Anxious',  w: (1-tx)*   ty  },
+      { name: 'Bored',    w:    tx *   ty  },
     ].sort((a, b) => b.w - a.w);
 
     if (weights[0].w > 0.58) return `Feeling ${weights[0].name.toLowerCase()}`;
@@ -526,30 +533,54 @@
   window.addEventListener('resize', resizeCanvas);
 
   /* ── Form submission ── */
-  document.getElementById('mainForm').addEventListener('submit', function(e) {
+  document.getElementById('mainForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     const emailInput = document.getElementById('emailInput');
+    const color = document.getElementById('selectedColor').value;
+    const comments = document.querySelector('textarea[name="comments"]').value.trim() || null;
 
-    if (!emailInput.value.trim() || !emailInput.validity.valid) {
+    if (!color) {
+      alert('Please select a color before submitting.');
+      return;
+    }
+
+    if (emailInput.value.trim() && !emailInput.validity.valid) {
       emailInput.classList.add('error');
       emailInput.focus();
       return;
     }
 
-    // Fade out form, fade in success
-    const form    = document.getElementById('mainForm');
-    const success = document.getElementById('successCard');
-    form.style.transition = 'opacity 0.3s ease';
-    form.style.opacity    = '0';
-    setTimeout(() => {
-      form.style.display      = 'none';
-      success.style.display   = 'block';
-      success.style.opacity   = '0';
-      success.style.transition = 'opacity 0.4s ease';
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => { success.style.opacity = '1'; });
-      });
-    }, 300);
+    const email = emailInput.value.trim() || null;
+
+    try {
+      const { error } = await supabaseClient
+        .from('bmore_tech_week_responses')
+        .insert([{ email, color, comments }]);
+
+      if (error) {
+        console.error('Database error:', error);
+        alert(`Error: ${error.message}`);
+        return;
+      }
+
+      // Fade out form, fade in success
+      const form = document.getElementById('mainForm');
+      const success = document.getElementById('successCard');
+      form.style.transition = 'opacity 0.3s ease';
+      form.style.opacity = '0';
+      setTimeout(() => {
+        form.style.display = 'none';
+        success.style.display = 'block';
+        success.style.opacity = '0';
+        success.style.transition = 'opacity 0.4s ease';
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => { success.style.opacity = '1'; });
+        });
+      }, 300);
+    } catch (err) {
+      console.error('Error:', err);
+      alert(`Error: ${err.message}`);
+    }
   });
 
   document.getElementById('emailInput').addEventListener('input', function() {

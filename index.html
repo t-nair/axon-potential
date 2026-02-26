@@ -302,9 +302,8 @@
   <nav>
     <div class="nav-container">
       <div class="logo">Axon</div>
-      <div class="nav-links">
-        <a href="bmore-tech-week.html" class="nav-link">Bmore Tech Week</a>
-        <a href="bmore-tech-week-results.html" class="nav-link">Results</a>
+      <div style="display: flex; gap: 1rem; align-items: center;">
+        <a href="bmore-tech-week.html" class="btn-secondary" style="text-decoration: none; padding: 0.8rem 1.6rem; border: 1px solid var(--border-dark); color: var(--text-primary); border-radius: 8px; font-weight: 600;">Bmore Tech Week</a>
         <button class="btn-waitlist open-modal">Join the Waitlist</button>
       </div>
     </div>
@@ -419,24 +418,22 @@
       <button class="close-btn" id="closeModal">×</button>
       <h3>Join the Waitlist</h3>
 
-      <form
-        action="https://formspree.io/f/xwvqqnqy"
-        method="POST"
-        class="waitlist-form"
-      >
-        <input type="email" name="email" placeholder="you@school.edu" required />
+      <form id="waitlistForm" class="waitlist-form">
+        <input type="email" id="email" name="email" placeholder="you@school.edu" required />
 
-        <select name="role" required>
-          <option value="" disabled selected>I am a…</option>
-          <option value="student">Student</option>
-          <option value="early_professional">Early professional</option>
+        <select id="source" name="source" required>
+          <option value="" disabled selected>Where did you hear about us?</option>
+          <option value="social_media">Social Media</option>
+          <option value="friend_referral">Friend Referral</option>
+          <option value="search">Search</option>
           <option value="other">Other</option>
         </select>
 
-        <button type="submit" class="btn-primary">
+        <button type="submit" class="btn-primary" id="submitBtn">
           Join the Waitlist →
         </button>
       </form>
+      <p id="statusMessage" style="margin-top: 1rem; text-align: center; font-size: 0.9rem; display: none;"></p>
     </div>
   </div>
 
@@ -445,7 +442,15 @@
     © 2026 Axon
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script>
+    // Initialize Supabase
+    const SUPABASE_URL = "https://bsipyuyaqyhudtkilhgw.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_JeLTY7rtfMOYq9iJk6KX7A_UaCjVEZy"; // Replace with your anon key from Settings > API
+    const { createClient } = supabase;
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Modal Logic
     const modal = document.getElementById("waitlistModal");
     const openButtons = document.querySelectorAll(".open-modal");
     const closeButton = document.getElementById("closeModal");
@@ -463,6 +468,56 @@
     modal.addEventListener("click", e => {
       if (e.target === modal) {
         modal.style.display = "none";
+      }
+    });
+
+    // Waitlist Form Submission
+    const waitlistForm = document.getElementById("waitlistForm");
+    const statusMessage = document.getElementById("statusMessage");
+    const submitBtn = document.getElementById("submitBtn");
+
+    waitlistForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById("email").value;
+      const source = document.getElementById("source").value;
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Joining...";
+      statusMessage.style.display = "block";
+      statusMessage.textContent = "Processing...";
+      statusMessage.style.color = "var(--text-secondary)";
+
+      try {
+        const { data, error } = await supabaseClient
+          .from("waitlist")
+          .insert([{ email, source }]);
+
+        if (error) {
+          console.error("Supabase error:", error);
+          if (error.code === "23505") {
+            statusMessage.textContent = "This email is already on the waitlist!";
+            statusMessage.style.color = "#ff6b6b";
+          } else {
+            statusMessage.textContent = `Error: ${error.message || "Try again."}`;
+            statusMessage.style.color = "#ff6b6b";
+          }
+        } else {
+          statusMessage.textContent = "✓ Successfully joined! Check your email.";
+          statusMessage.style.color = "#51cf66";
+          waitlistForm.reset();
+          setTimeout(() => {
+            modal.style.display = "none";
+            statusMessage.style.display = "none";
+          }, 2000);
+        }
+      } catch (err) {
+        console.error("Catch error:", err);
+        statusMessage.textContent = `Error: ${err.message || "Something went wrong."}`;
+        statusMessage.style.color = "#ff6b6b";
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Join the Waitlist →";
       }
     });
   </script>

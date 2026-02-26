@@ -326,7 +326,7 @@
       <canvas id="constellationCanvas"></canvas>
       <div class="corner-label tl"><span>😄</span> Excited</div>
       <div class="corner-label tr"><span>✨</span> Inspired</div>
-      <div class="corner-label bl"><span>🌊</span> Calm</div>
+      <div class="corner-label bl"><span>😴</span> Bored</div>
       <div class="corner-label br"><span>😬</span> Anxious</div>
     </div>
     <p class="card-desc">
@@ -350,18 +350,46 @@
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script>
+  // Initialize Supabase
+  const SUPABASE_URL = "https://bsipyuyaqyhudtkilhgw.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_JeLTY7rtfMOYq9iJk6KX7A_UaCjVEZy";
+  const { createClient } = window.supabase;
+  const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
   // ── Data ─────────────────────────────────────────────────────────────────────
-  // Replace this array with actual form response hex codes.
-  const responses = [
+  let responses = [];
+
+  // Fetch data from Supabase database
+  async function fetchDataFromDatabase() {
+    try {
+      const { data, error } = await supabaseClient
+        .from('bmore_tech_week_responses')
+        .select('color')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching from database:', error);
+        return;
+      }
+
+      responses = data.map(row => row.color).filter(color => color);
+      console.log(`Loaded ${responses.length} colors from database`);
+    } catch (err) {
+      console.error('Database fetch error:', err);
+    }
+  }
+
+  const sampleResponses = [
     // Excited (warm yellows / golds)
     '#FFC41E', '#F5C440', '#FFD055', '#EBB928', '#F8C232', '#E5BE3A',
     // Inspired (purples)
     '#8250FF', '#9462E8', '#7040D6', '#9A6EEF', '#7A36C8', '#8E5AE0',
-    // Calm (teals / greens)
-    '#0AD2A2', '#14C895', '#06D8AE', '#18CA90', '#10D0A8', '#0CC49E',
-    // Anxious (reds / corals)
+    // Bored (reds / corals)
     '#FF6060', '#EF6666', '#FF7A7A', '#E85A5A', '#F56A6A',
+    // Anxious (teals / greens)
+    '#0AD2A2', '#14C895', '#06D8AE', '#18CA90', '#10D0A8', '#0CC49E',
     // Blended / center
     '#A87AC8', '#68BEA0', '#C9A84E', '#D7A89E', '#88B2BA', '#B99068', '#F1A27E',
   ];
@@ -371,8 +399,8 @@
   const CORNERS = {
     tl: [255, 196,  30], // Excited
     tr: [130,  80, 255], // Inspired
-    bl: [ 10, 210, 165], // Calm
-    br: [255,  95,  95], // Anxious
+    bl: [255,  95,  95], // Bored
+    br: [ 10, 210, 165], // Anxious
   };
 
   function lerp(a, b, t) { return a + (b - a) * t; }
@@ -432,7 +460,7 @@
     const w = [
       { name: 'Excited',  v: (1 - tx) * (1 - ty) },
       { name: 'Inspired', v:      tx  * (1 - ty) },
-      { name: 'Calm',     v: (1 - tx) *      ty  },
+      { name: 'Bored',    v: (1 - tx) *      ty  },
       { name: 'Anxious',  v:      tx  *      ty  },
     ].sort((a, b) => b.v - a.v);
     if (w[0].v > 0.58) return `Feeling ${w[0].name.toLowerCase()}`;
@@ -449,11 +477,15 @@
     };
   }
 
-  // ── Precompute positions (expensive — do once) ────────────────────────────────
-  const computedPoints = responses.map(hex => {
-    const [tx, ty] = findPosition(hex);
-    return { hex, tx, ty };
-  });
+  // ── Precompute positions (will be computed after data is fetched) ────────────────────────────────
+  let computedPoints = [];
+
+  function computePoints() {
+    computedPoints = responses.map(hex => {
+      const [tx, ty] = findPosition(hex);
+      return { hex, tx, ty };
+    });
+  }
 
   // ── Counter animation ─────────────────────────────────────────────────────────
   function animateCounter(el, target, duration = 1800) {
@@ -633,7 +665,9 @@
   }
 
   // ── Init ──────────────────────────────────────────────────────────────────────
-  window.addEventListener('load', () => {
+  window.addEventListener('load', async () => {
+    await fetchDataFromDatabase();
+    computePoints();
     animateCounter(document.getElementById('counterNum'), responses.length);
     drawConstellation();
     setupTooltip();
