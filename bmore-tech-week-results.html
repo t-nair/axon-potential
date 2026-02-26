@@ -350,10 +350,38 @@
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script>
+  // Initialize Supabase
+  const SUPABASE_URL = "https://bsipyuyaqyhudtkilhgw.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_JeLTY7rtfMOYq9iJk6KX7A_UaCjVEZy";
+  const { createClient } = window.supabase;
+  const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
   // ── Data ─────────────────────────────────────────────────────────────────────
-  // Replace this array with actual form response hex codes.
-  const responses = [
+  let responses = [];
+
+  // Fetch data from Supabase database
+  async function fetchDataFromDatabase() {
+    try {
+      const { data, error } = await supabaseClient
+        .from('bmore_tech_week_responses')
+        .select('color')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching from database:', error);
+        return;
+      }
+
+      responses = data.map(row => row.color).filter(color => color);
+      console.log(`Loaded ${responses.length} colors from database`);
+    } catch (err) {
+      console.error('Database fetch error:', err);
+    }
+  }
+
+  const sampleResponses = [
     // Excited (warm yellows / golds)
     '#FFC41E', '#F5C440', '#FFD055', '#EBB928', '#F8C232', '#E5BE3A',
     // Inspired (purples)
@@ -449,11 +477,15 @@
     };
   }
 
-  // ── Precompute positions (expensive — do once) ────────────────────────────────
-  const computedPoints = responses.map(hex => {
-    const [tx, ty] = findPosition(hex);
-    return { hex, tx, ty };
-  });
+  // ── Precompute positions (will be computed after data is fetched) ────────────────────────────────
+  let computedPoints = [];
+
+  function computePoints() {
+    computedPoints = responses.map(hex => {
+      const [tx, ty] = findPosition(hex);
+      return { hex, tx, ty };
+    });
+  }
 
   // ── Counter animation ─────────────────────────────────────────────────────────
   function animateCounter(el, target, duration = 1800) {
@@ -633,7 +665,9 @@
   }
 
   // ── Init ──────────────────────────────────────────────────────────────────────
-  window.addEventListener('load', () => {
+  window.addEventListener('load', async () => {
+    await fetchDataFromDatabase();
+    computePoints();
     animateCounter(document.getElementById('counterNum'), responses.length);
     drawConstellation();
     setupTooltip();

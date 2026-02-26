@@ -428,7 +428,14 @@
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script>
+  // Initialize Supabase
+  const SUPABASE_URL = "https://bsipyuyaqyhudtkilhgw.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_JeLTY7rtfMOYq9iJk6KX7A_UaCjVEZy";
+  const { createClient } = window.supabase;
+  const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
   /* ── Colour picker ── */
   const canvas  = document.getElementById('colorCanvas');
   const ctx     = canvas.getContext('2d');
@@ -526,30 +533,54 @@
   window.addEventListener('resize', resizeCanvas);
 
   /* ── Form submission ── */
-  document.getElementById('mainForm').addEventListener('submit', function(e) {
+  document.getElementById('mainForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     const emailInput = document.getElementById('emailInput');
+    const color = document.getElementById('selectedColor').value;
+    const comments = document.querySelector('textarea[name="comments"]').value.trim() || null;
 
-    if (!emailInput.value.trim() || !emailInput.validity.valid) {
+    if (!color) {
+      alert('Please select a color before submitting.');
+      return;
+    }
+
+    if (emailInput.value.trim() && !emailInput.validity.valid) {
       emailInput.classList.add('error');
       emailInput.focus();
       return;
     }
 
-    // Fade out form, fade in success
-    const form    = document.getElementById('mainForm');
-    const success = document.getElementById('successCard');
-    form.style.transition = 'opacity 0.3s ease';
-    form.style.opacity    = '0';
-    setTimeout(() => {
-      form.style.display      = 'none';
-      success.style.display   = 'block';
-      success.style.opacity   = '0';
-      success.style.transition = 'opacity 0.4s ease';
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => { success.style.opacity = '1'; });
-      });
-    }, 300);
+    const email = emailInput.value.trim() || null;
+
+    try {
+      const { error } = await supabaseClient
+        .from('bmore_tech_week_responses')
+        .insert([{ email, color, comments }]);
+
+      if (error) {
+        console.error('Database error:', error);
+        alert(`Error: ${error.message}`);
+        return;
+      }
+
+      // Fade out form, fade in success
+      const form = document.getElementById('mainForm');
+      const success = document.getElementById('successCard');
+      form.style.transition = 'opacity 0.3s ease';
+      form.style.opacity = '0';
+      setTimeout(() => {
+        form.style.display = 'none';
+        success.style.display = 'block';
+        success.style.opacity = '0';
+        success.style.transition = 'opacity 0.4s ease';
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => { success.style.opacity = '1'; });
+        });
+      }, 300);
+    } catch (err) {
+      console.error('Error:', err);
+      alert(`Error: ${err.message}`);
+    }
   });
 
   document.getElementById('emailInput').addEventListener('input', function() {
