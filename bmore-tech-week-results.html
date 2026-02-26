@@ -326,7 +326,7 @@
       <canvas id="constellationCanvas"></canvas>
       <div class="corner-label tl"><span>😄</span> Excited</div>
       <div class="corner-label tr"><span>✨</span> Inspired</div>
-      <div class="corner-label bl"><span>🌊</span> Calm</div>
+      <div class="corner-label bl"><span>😴</span> Bored</div>
       <div class="corner-label br"><span>😬</span> Anxious</div>
     </div>
     <p class="card-desc">
@@ -386,10 +386,10 @@
     '#FFC41E', '#F5C440', '#FFD055', '#EBB928', '#F8C232', '#E5BE3A',
     // Inspired (purples)
     '#8250FF', '#9462E8', '#7040D6', '#9A6EEF', '#7A36C8', '#8E5AE0',
-    // Calm (teals / greens)
-    '#0AD2A2', '#14C895', '#06D8AE', '#18CA90', '#10D0A8', '#0CC49E',
-    // Anxious (reds / corals)
+    // Bored (reds / corals)
     '#FF6060', '#EF6666', '#FF7A7A', '#E85A5A', '#F56A6A',
+    // Anxious (teals / greens)
+    '#0AD2A2', '#14C895', '#06D8AE', '#18CA90', '#10D0A8', '#0CC49E',
     // Blended / center
     '#A87AC8', '#68BEA0', '#C9A84E', '#D7A89E', '#88B2BA', '#B99068', '#F1A27E',
   ];
@@ -399,8 +399,8 @@
   const CORNERS = {
     tl: [255, 196,  30], // Excited
     tr: [130,  80, 255], // Inspired
-    bl: [ 10, 210, 165], // Calm
-    br: [255,  95,  95], // Anxious
+    bl: [255,  95,  95], // Bored
+    br: [ 10, 210, 165], // Anxious
   };
 
   function lerp(a, b, t) { return a + (b - a) * t; }
@@ -460,7 +460,7 @@
     const w = [
       { name: 'Excited',  v: (1 - tx) * (1 - ty) },
       { name: 'Inspired', v:      tx  * (1 - ty) },
-      { name: 'Calm',     v: (1 - tx) *      ty  },
+      { name: 'Bored',    v: (1 - tx) *      ty  },
       { name: 'Anxious',  v:      tx  *      ty  },
     ].sort((a, b) => b.v - a.v);
     if (w[0].v > 0.58) return `Feeling ${w[0].name.toLowerCase()}`;

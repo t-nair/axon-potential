@@ -373,8 +373,8 @@
           <canvas id="colorCanvas"></canvas>
           <div class="corner-label tl"><span>😄</span> Excited</div>
           <div class="corner-label tr"><span>✨</span> Inspired</div>
-          <div class="corner-label bl"><span>🌊</span> Calm</div>
-          <div class="corner-label br"><span>😬</span> Anxious</div>
+          <div class="corner-label bl"><span>😓</span> Anxious</div>
+          <div class="corner-label br"><span>😴</span> Bored</div>
           <div id="pickerCursor"></div>
         </div>
         <div class="color-readout">
@@ -445,7 +445,7 @@
   const feelEl  = document.getElementById('colorFeeling');
   const hidden  = document.getElementById('selectedColor');
 
-  // Corner colours (R,G,B): TL=Excited, TR=Inspired, BL=Calm, BR=Anxious
+  // Corner colours (R,G,B): TL=Excited, TR=Inspired, BL=Anxious, BR=Bored
   const C = {
     tl: [255, 196, 30],
     tr: [130, 80, 255],
@@ -469,8 +469,8 @@
     const weights = [
       { name: 'Excited',  w: (1-tx)*(1-ty) },
       { name: 'Inspired', w:    tx *(1-ty) },
-      { name: 'Calm',     w: (1-tx)*   ty  },
-      { name: 'Anxious',  w:    tx *   ty  },
+      { name: 'Anxious',  w: (1-tx)*   ty  },
+      { name: 'Bored',    w:    tx *   ty  },
     ].sort((a, b) => b.w - a.w);
 
     if (weights[0].w > 0.58) return `Feeling ${weights[0].name.toLowerCase()}`;
