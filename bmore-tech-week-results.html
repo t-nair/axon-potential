@@ -326,7 +326,7 @@
       <canvas id="constellationCanvas"></canvas>
       <div class="corner-label tl"><span>😄</span> Excited</div>
       <div class="corner-label tr"><span>✨</span> Inspired</div>
-      <div class="corner-label bl"><span>😴</span> Bored</div>
+      <div class="corner-label bl"><span>🌊</span> Calm</div>
       <div class="corner-label br"><span>😬</span> Anxious</div>
     </div>
     <p class="card-desc">
@@ -460,7 +460,7 @@
     const w = [
       { name: 'Excited',  v: (1 - tx) * (1 - ty) },
       { name: 'Inspired', v:      tx  * (1 - ty) },
-      { name: 'Bored',    v: (1 - tx) *      ty  },
+      { name: 'Calm',    v: (1 - tx) *      ty  },
       { name: 'Anxious',  v:      tx  *      ty  },
     ].sort((a, b) => b.v - a.v);
     if (w[0].v > 0.58) return `Feeling ${w[0].name.toLowerCase()}`;
