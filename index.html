@@ -56,6 +56,24 @@
       font-weight: 700;
     }
 
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-link:hover {
+      color: var(--accent-blue);
+    }
+
     .btn-waitlist,
     .btn-primary {
       padding: 0.8rem 1.6rem;
@@ -284,7 +302,11 @@
   <nav>
     <div class="nav-container">
       <div class="logo">Axon</div>
-      <button class="btn-waitlist open-modal">Join the Waitlist</button>
+      <div class="nav-links">
+        <a href="bmore-tech-week.html" class="nav-link">Bmore Tech Week</a>
+        <a href="bmore-tech-week-results.html" class="nav-link">Results</a>
+        <button class="btn-waitlist open-modal">Join the Waitlist</button>
+      </div>
     </div>
   </nav>
 
